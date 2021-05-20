@@ -1,6 +1,10 @@
 import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
 import dynamic from 'next/dynamic'
+import { AuthContext } from '../../contexts/AuthContext'
+import { useContext, useEffect } from 'react'
+import { parseCookies } from 'nookies'
+import Router from 'next/router'
 import { Box, Flex, SimpleGrid, Text, theme } from '@chakra-ui/react'
 
 const Chart = dynamic(() => import('react-apexcharts'), {
@@ -56,6 +60,16 @@ const options = {
 const series = [{ name: 'Series1', data: [31, 23, 104, 105, 200, 300, 301] }]
 
 export default function Dashboard() {
+  useEffect(() => {
+    async function verifyAuth() {
+      const { auth_token } = parseCookies()
+      if (!auth_token) {
+        Router.push('/')
+      }
+    }
+    verifyAuth()
+  }, [])
+
   return (
     <Flex direction="column" h="100vh">
       <Header />

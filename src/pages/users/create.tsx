@@ -9,12 +9,25 @@ import {
   Button,
 } from '@chakra-ui/react'
 import React from 'react'
-import { Input } from '../../components/Form/Input'
+import Router from 'next/router'
 
+import { useEffect } from 'react'
+import { parseCookies } from 'nookies'
+
+import { Input } from '../../components/Form/Input'
 import { Header } from '../../components/Header'
 import { Sidebar } from '../../components/Sidebar'
 
 export default function CreateUser() {
+  useEffect(() => {
+    function verifyAuth() {
+      const { auth_token } = parseCookies()
+      if (!auth_token) {
+        Router.push('/')
+      }
+    }
+    verifyAuth()
+  }, [])
   return (
     <Box>
       <Header />

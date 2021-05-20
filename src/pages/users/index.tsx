@@ -15,12 +15,24 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
-
+import { useEffect } from 'react'
+import { parseCookies } from 'nookies'
 import { Header } from '../../components/Header'
 import { Pagination } from '../../components/Pagination'
+import Router from 'next/router'
+
 import { Sidebar } from '../../components/Sidebar'
 
 export default function UserList() {
+  useEffect(() => {
+    function verifyAuth() {
+      const { auth_token } = parseCookies()
+      if (!auth_token) {
+        Router.push('/')
+      }
+    }
+    verifyAuth()
+  }, [])
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true,

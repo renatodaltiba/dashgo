@@ -1,6 +1,17 @@
-import { Flex, Icon, IconButton, useBreakpointValue } from '@chakra-ui/react'
+import {
+  Flex,
+  Icon,
+  IconButton,
+  useBreakpointValue,
+  Text,
+  Button,
+} from '@chakra-ui/react'
+import Router from 'next/router'
+import { destroyCookie } from 'nookies'
+import React from 'react'
 import { RiMenuLine } from 'react-icons/ri'
 import { useSidebarDrawer } from '../../contexts/SidebarDrawerContext'
+import { api } from '../../services/api'
 
 import { Logo } from './Logo'
 import { NotificationsNav } from './NotificationNav'
@@ -14,6 +25,17 @@ export function Header() {
     lg: true,
   })
 
+  async function handleLogout() {
+    await api
+      .delete('auth')
+      .then(() => {
+        destroyCookie(undefined, 'auth_token')
+        Router.push('/')
+      })
+      .catch(() => {
+        console.log('não foi possível realizar o logout')
+      })
+  }
   return (
     <Flex
       as="header"
@@ -37,11 +59,15 @@ export function Header() {
       )}
 
       <Logo />
+
       {isWideVersion && <SearchBox />}
       <Flex align="center" ml="auto">
         <NotificationsNav />
         <Profile showProfileData={isWideVersion} />
       </Flex>
+      <Button ml="3" size="m" colorScheme="red" p="1" onClick={handleLogout}>
+        logout
+      </Button>
     </Flex>
   )
 }
